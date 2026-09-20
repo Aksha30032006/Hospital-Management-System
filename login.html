@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital Management System</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: linear-gradient(
+                135deg,
+                #e7f6ff,
+                #f8fcff,
+                #dff5ef
+            );
+        }
+
+        .container {
+            width: 900px;
+            max-width: 92%;
+
+            min-height: 540px;
+
+            background: white;
+
+            border-radius: 25px;
+
+            overflow: hidden;
+
+            display: flex;
+
+            box-shadow:
+                0 20px 60px rgba(0, 70, 120, 0.18);
+        }
+
+        /* LEFT */
+
+        .left {
+            width: 50%;
+
+            padding: 55px 45px;
+
+            background: linear-gradient(
+                145deg,
+                #087ea4,
+                #075985
+            );
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .icon {
+            width: 75px;
+            height: 75px;
+
+            background: white;
+
+            border-radius: 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 38px;
+
+            margin-bottom: 25px;
+        }
+
+        .left h1 {
+            font-size: 32px;
+            line-height: 1.2;
+
+            margin-bottom: 18px;
+        }
+
+        .left p {
+            font-size: 15px;
+            line-height: 1.7;
+
+            color: #e5f6ff;
+        }
+
+        .features {
+            margin-top: 30px;
+        }
+
+        .feature {
+            margin: 13px 0;
+
+            font-size: 14px;
+        }
+
+        /* RIGHT */
+
+        .right {
+            width: 50%;
+
+            padding: 45px 55px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title {
+            color: #12344d;
+
+            font-size: 29px;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #718096;
+
+            font-size: 14px;
+
+            margin-bottom: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #34495e;
+
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            height: 48px;
+
+            border: 1px solid #d8e3eb;
+
+            border-radius: 11px;
+
+            padding: 0 14px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            background: #f9fcfe;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #0783a8;
+
+            box-shadow:
+                0 0 0 4px rgba(7,131,168,0.10);
+
+            background: white;
+        }
+
+        .main-btn {
+            width: 100%;
+
+            height: 50px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                #0783a8,
+                #075985
+            );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+        }
+
+        .main-btn:hover {
+            opacity: 0.92;
+        }
+
+        .switch {
+            text-align: center;
+
+            margin-top: 18px;
+
+            font-size: 14px;
+
+            color: #718096;
+        }
+
+        .switch span {
+            color: #0783a8;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+
+            margin-top: 15px;
+
+            min-height: 20px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            font-size: 12px;
+
+            color: #9aa7b2;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 750px) {
+
+            .container {
+                flex-direction: column;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+
+            .left {
+                padding: 35px;
+                text-align: center;
+            }
+
+            .features {
+                display: none;
+            }
+
+            .right {
+                padding: 35px 30px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- LEFT -->
+
+    <div class="left">
+
+        <div class="icon">
+            🏥
+        </div>
+
+        <h1>
+            Hospital Management System
+        </h1>
+
+        <p>
+            Manage patients, doctors, wards,
+            beds and admissions efficiently
+            from one place.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                ✓ Patient Management
+            </div>
+
+            <div class="feature">
+                ✓ Doctor Management
+            </div>
+
+            <div class="feature">
+                ✓ Real-Time Bed Tracking
+            </div>
+
+            <div class="feature">
+                ✓ Admission Management
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <div class="right">
+
+
+        <!-- LOGIN -->
+
+        <div id="loginSection">
+
+            <h2 class="title">
+                Welcome Back 👋
+            </h2>
+
+            <p class="subtitle">
+                Login to access your dashboard
+            </p>
+
+
+            <div class="input-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    placeholder="Enter username"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter password"
+                >
+
+            </div>
+
+
+            <button
+                class="main-btn"
+                onclick="login()">
+
+                🔐 Login
+
+            </button>
+
+
+            <div class="switch">
+
+                Don't have an account?
+
+                <span onclick="showRegister()">
+                    Create Account
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- REGISTER -->
+
+        <div id="registerSection" class="hidden">
+
+            <h2 class="title">
+                Create Account ✨
+            </h2>
+
+            <p class="subtitle">
+                Create your hospital system account
+            </p>
+
+
+            <div class="input-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="registerUsername"
+                    placeholder="Create username"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Create password"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Role
+                </label>
+
+                <select id="registerRole">
+
+                    <option value="USER">
+                        User
+                    </option>
+
+                    <option value="ADMIN">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="main-btn"
+                onclick="registerUser()">
+
+                📝 Create Account
+
+            </button>
+
+
+            <div class="switch">
+
+                Already have an account?
+
+                <span onclick="showLogin()">
+                    Login
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <p id="message"></p>
+
+
+        <div class="footer">
+
+            © 2026 Hospital Management System
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    function showRegister() {
+
+        document
+            .getElementById("loginSection")
+            .classList.add("hidden");
+
+        document
+            .getElementById("registerSection")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("message")
+            .innerText = "";
+
+    }
+
+
+    function showLogin() {
+
+        document
+            .getElementById("registerSection")
+            .classList.add("hidden");
+
+        document
+            .getElementById("loginSection")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("message")
+            .innerText = "";
+
+    }
+
+
+    function registerUser() {
+
+        const username =
+            document
+                .getElementById("registerUsername")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("registerPassword")
+                .value;
+
+        const confirmPassword =
+            document
+                .getElementById("confirmPassword")
+                .value;
+
+        const role =
+            document
+                .getElementById("registerRole")
+                .value;
+
+        const message =
+            document.getElementById("message");
+
+
+        if (
+            username === "" ||
+            password === "" ||
+            confirmPassword === ""
+        ) {
+
+            message.innerText =
+                "Please fill all fields.";
+
+            message.style.color =
+                "#e74c3c";
+
+            return;
+        }
+
+
+        if (password !== confirmPassword) {
+
+            message.innerText =
+                "Passwords do not match.";
+
+            message.style.color =
+                "#e74c3c";
+
+            return;
+        }
+
+
+        fetch("/api/users/register", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                username: username,
+
+                password: password,
+
+                role: role
+
+            })
+
+        })
+
+        .then(response => response.text())
+
+        .then(data => {
+
+            if (data === "Registration Successful") {
+
+                message.innerText =
+                    "Account created successfully ✓";
+
+                message.style.color =
+                    "#16a085";
+
+
+                setTimeout(() => {
+
+                    document
+                        .getElementById("loginUsername")
+                        .value = username;
+
+                    showLogin();
+
+                    message.innerText =
+                        "Account created! Please login.";
+
+                    message.style.color =
+                        "#16a085";
+
+                }, 700);
+
+            }
+
+            else {
+
+                message.innerText = data;
+
+                message.style.color =
+                    "#e74c3c";
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            message.innerText =
+                "Server connection failed.";
+
+            message.style.color =
+                "#e74c3c";
+
+        });
+
+    }
+
+
+    function login() {
+
+        const username =
+            document
+                .getElementById("loginUsername")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
+
+        const message =
+            document.getElementById("message");
+
+
+        if (
+            username === "" ||
+            password === ""
+        ) {
+
+            message.innerText =
+                "Please enter username and password.";
+
+            message.style.color =
+                "#e74c3c";
+
+            return;
+        }
+
+
+        fetch("/api/users/login", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                username: username,
+
+                password: password
+
+            })
+
+        })
+
+        .then(response => response.text())
+
+        .then(data => {
+
+            if (data === "Login Successful") {
+
+                message.innerText =
+                    "Login Successful ✓";
+
+                message.style.color =
+                    "#16a085";
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }, 500);
+
+            }
+
+            else {
+
+                message.innerText =
+                    "Invalid Username or Password";
+
+                message.style.color =
+                    "#e74c3c";
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            message.innerText =
+                "Server connection failed.";
+
+            message.style.color =
+                "#e74c3c";
+
+        });
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
+
