@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f5fa;
+            color: #222;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            color: #123c69;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #123c69;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 8px;
+        }
+
+        .btn:hover {
+            background: #0b2745;
+        }
+
+        .management {
+            padding: 30px 8%;
+            text-align: center;
+        }
+
+        .management h2 {
+            color: #123c69;
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px #00000015;
+        }
+
+        .card h3 {
+            color: #123c69;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            margin-top: 40px;
+            background: #123c69;
+            color: white;
+            text-align: center;
+            padding: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🏥 Hospital Management System</h1>
+        <p>Smart Healthcare Management & Real-Time Bed Tracking</p>
+    </header>
+
+    <section class="hero">
+        <h2>Welcome to Our Hospital Management System</h2>
+
+        <p>
+            Manage patients, doctors, wards, beds and admissions
+            through one simple system.
+        </p>
+
+        <a href="login.html" class="btn">Login</a>
+    </section>
+
+    <section class="management">
+        <h2>Management Modules</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>👨‍⚕️ Doctors</h3>
+                <p>View and manage doctor details.</p>
+                <a href="doctors.html" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>🧑 Patients</h3>
+                <p>Manage patient information.</p>
+                <a href="patients.html" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>🏥 Wards</h3>
+                <p>View and manage hospital wards.</p>
+                <a href="wards.html" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>🛏️ Bed Tracking</h3>
+                <p>Monitor hospital bed availability.</p>
+                <a href="beds.html" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>📋 Admissions</h3>
+                <p>Manage patient admissions and discharge.</p>
+                <a href="admissions.html" class="btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>📊 Dashboard</h3>
+                <p>View hospital management dashboard.</p>
+                <a href="dashboard.html" class="btn">View</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Hospital Management System | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>
