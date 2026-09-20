@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ward Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .navbar {
+            background: #1769aa;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .back {
+            background: white;
+            color: #1769aa;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            margin-top: 20px;
+            background: #1769aa;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .add-btn:hover {
+            background: #0d4f82;
+        }
+
+        #message {
+            font-weight: bold;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1769aa;
+            color: white;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            margin: 3px;
+        }
+
+        .edit-btn {
+            background: #f0a500;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .edit-btn:hover {
+            background: #d18d00;
+        }
+
+        .delete-btn:hover {
+            background: #b02a37;
+        }
+
+        @media (max-width: 800px) {
+            .form-grid, .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>🏥 Ward Management</h2>
+
+        <button class="back" onclick="goDashboard()">
+            ← Dashboard
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- ADD WARD -->
+        <div class="box">
+
+            <h1>Add New Ward</h1>
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Ward Name</label>
+                    <input type="text" id="wardName"
+                           placeholder="Example: General Ward">
+                </div>
+
+                <div>
+                    <label>Ward Type</label>
+
+                    <select id="wardType">
+                        <option value="">Select Ward Type</option>
+                        <option value="General">General</option>
+                        <option value="ICU">ICU</option>
+                        <option value="Emergency">Emergency</option>
+                        <option value="Private">Private</option>
+                        <option value="Maternity">Maternity</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Total Beds</label>
+                    <input type="number" id="totalBeds"
+                           min="1" placeholder="Example: 20">
+                </div>
+
+            </div>
+
+            <button class="add-btn" onclick="addWard()">
+                + Add Ward
+            </button>
+
+            <p id="message"></p>
+
+        </div>
+
+        <!-- WARD LIST -->
+        <div class="box">
+
+            <h1>Ward List</h1>
+
+            <div class="search-grid">
+
+                <input type="text" id="searchInput"
+                       placeholder="Search by Ward ID or Name..."
+                       oninput="filterWards()">
+
+                <select id="typeFilter" onchange="filterWards()">
+                    <option value="">All Ward Types</option>
+                    <option value="General">General</option>
+                    <option value="ICU">ICU</option>
+                    <option value="Emergency">Emergency</option>
+                    <option value="Private">Private</option>
+                    <option value="Maternity">Maternity</option>
+                </select>
+
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ward Name</th>
+                            <th>Ward Type</th>
+                            <th>Total Beds</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="wardTable"></tbody>
+                </table>
+            </div>
+
+            <p id="listMessage"></p>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let allWards = [];
+
+        // LOAD WARDS
+        function loadWards() {
+
+            fetch("/api/wards")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to load wards");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    allWards = data;
+                    filterWards();
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById("listMessage").innerText =
+                        "Unable to load wards.";
+                });
+        }
+
+        // DISPLAY AND FILTER WARDS
+        function filterWards() {
+
+            const search = document.getElementById("searchInput")
+                .value.toLowerCase().trim();
+
+            const type = document.getElementById("typeFilter").value;
+
+            const filtered = allWards.filter(ward => {
+
+                const matchesSearch =
+                    String(ward.id).includes(search) ||
+                    (ward.wardName || "").toLowerCase().includes(search);
+
+                const matchesType =
+                    type === "" || ward.wardType === type;
+
+                return matchesSearch && matchesType;
+            });
+
+            const table = document.getElementById("wardTable");
+            table.innerHTML = "";
+
+            if (filtered.length === 0) {
+                table.innerHTML =
+                    `<tr><td colspan="5">No wards found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(ward => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${ward.id}</td>
+                    <td>${ward.wardName || ""}</td>
+                    <td>${ward.wardType || ""}</td>
+                    <td>${ward.totalBeds}</td>
+                    <td>
+                        <button class="edit-btn"
+                            onclick="editWard(${ward.id})">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn"
+                            onclick="deleteWard(${ward.id})">
+                            Delete
+                        </button>
+                    </td>
+                `;
+
+                table.appendChild(row);
+            });
+        }
+
+        // ADD WARD
+        function addWard() {
+
+            const wardName =
+                document.getElementById("wardName").value.trim();
+
+            const wardType =
+                document.getElementById("wardType").value;
+
+            const totalBeds =
+                Number(document.getElementById("totalBeds").value);
+
+            const message = document.getElementById("message");
+
+            if (!wardName || !wardType ||
+                !Number.isInteger(totalBeds) || totalBeds < 1) {
+
+                message.style.color = "red";
+                message.innerText =
+                    "Please enter valid details in all fields.";
+                return;
+            }
+
+            const ward = {
+                wardName: wardName,
+                wardType: wardType,
+                totalBeds: totalBeds
+            };
+
+            fetch("/api/wards", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(ward)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to add ward");
+                }
+                return response.json();
+            })
+            .then(() => {
+
+                message.style.color = "green";
+                message.innerText = "Ward added successfully!";
+
+                document.getElementById("wardName").value = "";
+                document.getElementById("wardType").value = "";
+                document.getElementById("totalBeds").value = "";
+
+                loadWards();
+            })
+            .catch(error => {
+                console.error(error);
+                message.style.color = "red";
+                message.innerText = "Failed to add ward.";
+            });
+        }
+
+        // EDIT WARD
+        function editWard(id) {
+
+            const ward = allWards.find(w => w.id === id);
+
+            if (!ward) return;
+
+            const newName = prompt("Enter Ward Name:", ward.wardName);
+            if (newName === null) return;
+
+            const newType = prompt(
+                "Enter Ward Type (General, ICU, Emergency, Private, Maternity):",
+                ward.wardType
+            );
+
+            if (newType === null) return;
+
+            const newBeds = prompt("Enter Total Beds:", ward.totalBeds);
+            if (newBeds === null) return;
+
+            const validTypes = [
+                "General", "ICU", "Emergency", "Private", "Maternity"
+            ];
+
+            const beds = Number(newBeds);
+
+            if (!newName.trim() ||
+                !validTypes.includes(newType.trim()) ||
+                !Number.isInteger(beds) || beds < 1) {
+
+                alert("Please enter valid ward details.");
+                return;
+            }
+
+            const updatedWard = {
+                wardName: newName.trim(),
+                wardType: newType.trim(),
+                totalBeds: beds
+            };
+
+            fetch(`/api/wards/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedWard)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to update ward");
+                }
+                return response.json();
+            })
+            .then(() => {
+                alert("Ward updated successfully!");
+                loadWards();
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Failed to update ward.");
+            });
+        }
+
+        // DELETE WARD
+        function deleteWard(id) {
+
+            const confirmDelete = confirm(
+                "Are you sure you want to delete Ward ID " + id + "?"
+            );
+
+            if (!confirmDelete) return;
+
+            fetch(`/api/wards/${id}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to delete ward");
+                }
+
+                alert("Ward deleted successfully!");
+                loadWards();
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Unable to delete ward. It may have linked beds.");
+            });
+        }
+
+        // DASHBOARD
+        function goDashboard() {
+            window.location.href = "dashboard.html";
+        }
+
+        // INITIAL LOAD
+        loadWards();
+
+    </script>
+
+</body>
+</html>

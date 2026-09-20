@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .navbar {
+            background: #1769aa;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .back {
+            background: white;
+            color: #1769aa;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .form-box,
+        .table-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .add-btn,
+        .cancel-btn {
+            margin-top: 20px;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            background: #1769aa;
+        }
+
+        .add-btn:hover {
+            background: #0d4f82;
+        }
+
+        .cancel-btn {
+            background: #777;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            min-width: 850px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1769aa;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f7fc;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            margin: 2px;
+        }
+
+        .edit-btn {
+            background: #f0a500;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid,
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .navbar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>🏥 Patient Management</h2>
+
+        <button class="back" onclick="goDashboard()">
+            ← Dashboard
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- Add / Edit Patient Form -->
+        <div class="form-box">
+
+            <h1 id="formTitle">Add New Patient</h1>
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Patient Name *</label>
+                    <input type="text" id="name" placeholder="Enter patient name">
+                </div>
+
+                <div>
+                    <label>Age *</label>
+                    <input type="number" id="age" min="0" max="150"
+                           placeholder="Enter age">
+                </div>
+
+                <div>
+                    <label>Gender *</label>
+                    <select id="gender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Phone</label>
+                    <input type="text" id="phone" placeholder="Enter phone number">
+                </div>
+
+                <div>
+                    <label>Address</label>
+                    <input type="text" id="address" placeholder="Enter address">
+                </div>
+
+            </div>
+
+            <button class="add-btn" id="submitBtn" onclick="savePatient()">
+                + Add Patient
+            </button>
+
+            <button class="cancel-btn" id="cancelBtn"
+                    onclick="cancelEdit()" style="display:none;">
+                Cancel
+            </button>
+
+            <p id="message"></p>
+        </div>
+
+        <!-- Patient List -->
+        <div class="table-box">
+
+            <h1>Patient List</h1>
+
+            <div class="filters">
+
+                <input type="text" id="searchInput"
+                       placeholder="🔍 Search by Patient ID or Name..."
+                       oninput="filterPatients()">
+
+                <select id="genderFilter" onchange="filterPatients()">
+                    <option value="">All Genders</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+
+            </div>
+
+            <p id="patientCount">Loading patients...</p>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="patientTable"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let allPatients = [];
+        let editingPatientId = null;
+
+        // Load patients
+        async function loadPatients() {
+            try {
+                const response = await fetch("/api/patients");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load patients");
+                }
+
+                allPatients = await response.json();
+                filterPatients();
+
+            } catch (error) {
+                console.error(error);
+
+                document.getElementById("patientTable").innerHTML =
+                    `<tr><td colspan="7" class="no-data">
+                        Failed to load patients.
+                    </td></tr>`;
+            }
+        }
+
+        // Search and gender filter
+        function filterPatients() {
+            const search = document.getElementById("searchInput")
+                .value.trim().toLowerCase();
+
+            const gender = document.getElementById("genderFilter")
+                .value.toLowerCase();
+
+            const filtered = allPatients.filter(patient => {
+                const id = String(patient.id ?? "").toLowerCase();
+                const name = String(patient.name ?? "").toLowerCase();
+                const patientGender = String(patient.gender ?? "").toLowerCase();
+
+                return (id.includes(search) || name.includes(search)) &&
+                    (gender === "" || patientGender === gender);
+            });
+
+            displayPatients(filtered);
+        }
+
+        // Display patient table
+        function displayPatients(patients) {
+            const table = document.getElementById("patientTable");
+            table.innerHTML = "";
+
+            document.getElementById("patientCount").innerText =
+                `Showing ${patients.length} of ${allPatients.length} patients`;
+
+            if (patients.length === 0) {
+                table.innerHTML =
+                    `<tr><td colspan="7" class="no-data">
+                        No patients found.
+                    </td></tr>`;
+                return;
+            }
+
+            patients.forEach(patient => {
+                const row = document.createElement("tr");
+
+                [
+                    patient.id,
+                    patient.name,
+                    patient.age,
+                    patient.gender,
+                    patient.phone,
+                    patient.address
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value ?? "-";
+                    row.appendChild(cell);
+                });
+
+                // Edit button
+                const actionCell = document.createElement("td");
+
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "✏️ Edit";
+                editBtn.className = "edit-btn";
+                editBtn.onclick = () => editPatient(patient.id);
+
+                // Delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "🗑️ Delete";
+                deleteBtn.className = "delete-btn";
+                deleteBtn.onclick = () => deletePatient(patient.id);
+
+                actionCell.appendChild(editBtn);
+                actionCell.appendChild(deleteBtn);
+                row.appendChild(actionCell);
+
+                table.appendChild(row);
+            });
+        }
+
+        // Add or update patient
+        async function savePatient() {
+            const name = document.getElementById("name").value.trim();
+            const age = document.getElementById("age").value;
+            const gender = document.getElementById("gender").value;
+            const phone = document.getElementById("phone").value.trim();
+            const address = document.getElementById("address").value.trim();
+
+            const message = document.getElementById("message");
+            const submitBtn = document.getElementById("submitBtn");
+
+            if (!name || age === "" || !gender) {
+                message.style.color = "red";
+                message.innerText = "Please fill all required fields.";
+                return;
+            }
+
+            if (Number(age) < 0 || Number(age) > 150) {
+                message.style.color = "red";
+                message.innerText = "Please enter a valid age.";
+                return;
+            }
+
+            const patient = {
+                name,
+                age: Number(age),
+                gender,
+                phone,
+                address
+            };
+
+            const isEditing = editingPatientId !== null;
+
+            const url = isEditing
+                ? `/api/patients/${editingPatientId}`
+                : "/api/patients";
+
+            const method = isEditing ? "PUT" : "POST";
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Saving...";
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(patient)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Save failed");
+                }
+
+                message.style.color = "green";
+                message.innerText = isEditing
+                    ? "Patient updated successfully!"
+                    : "Patient added successfully!";
+
+                resetForm();
+                await loadPatients();
+
+            } catch (error) {
+                console.error(error);
+
+                message.style.color = "red";
+                message.innerText =
+                    "Failed to save patient. Please try again.";
+
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText =
+                    editingPatientId !== null ? "Update Patient" : "+ Add Patient";
+            }
+        }
+
+        // Load patient details into form for editing
+        function editPatient(id) {
+            const patient = allPatients.find(p => String(p.id) === String(id));
+
+            if (!patient) return;
+
+            editingPatientId = patient.id;
+
+            document.getElementById("name").value = patient.name ?? "";
+            document.getElementById("age").value = patient.age ?? "";
+            document.getElementById("gender").value = patient.gender ?? "";
+            document.getElementById("phone").value = patient.phone ?? "";
+            document.getElementById("address").value = patient.address ?? "";
+
+            document.getElementById("formTitle").innerText = "Edit Patient";
+            document.getElementById("submitBtn").innerText = "Update Patient";
+            document.getElementById("cancelBtn").style.display = "inline-block";
+
+            document.getElementById("message").innerText = "";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        // Delete patient
+        async function deletePatient(id) {
+            const confirmed = confirm(
+                `Are you sure you want to delete Patient ID ${id}?`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`/api/patients/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error("Patient not found");
+                    }
+
+                    throw new Error(
+                        "Delete failed. Patient may have linked admission records."
+                    );
+                }
+
+                document.getElementById("message").style.color = "green";
+                document.getElementById("message").innerText =
+                    "Patient deleted successfully!";
+
+                await loadPatients();
+
+            } catch (error) {
+                console.error(error);
+
+                document.getElementById("message").style.color = "red";
+                document.getElementById("message").innerText =
+                    error.message;
+            }
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            resetForm();
+            document.getElementById("message").innerText = "";
+        }
+
+        // Reset form
+        function resetForm() {
+            editingPatientId = null;
+
+            document.getElementById("name").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("gender").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("address").value = "";
+
+            document.getElementById("formTitle").innerText = "Add New Patient";
+            document.getElementById("submitBtn").innerText = "+ Add Patient";
+            document.getElementById("cancelBtn").style.display = "none";
+        }
+
+        function goDashboard() {
+            window.location.href = "dashboard.html";
+        }
+
+        loadPatients();
+    </script>
+
+</body>
+</html>

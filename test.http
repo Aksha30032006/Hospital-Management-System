@@ -1,0 +1,8 @@
+POST http://localhost:8080/api/beds
+Content-Type: application/json
+
+{
+  "bedNumber": "B001",
+  "ward": "General Ward",
+  "status": "AVAILABLE"
+}

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .navbar {
+            min-height: 70px;
+            background: #1769aa;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 35px;
+            gap: 15px;
+        }
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+        .logout {
+            background: white;
+            color: #1769aa;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 100%;
+            padding: 35px 40px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 32px;
+            color: #123b5d;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #667085;
+            font-size: 15px;
+        }
+
+        .section-title {
+            color: #123b5d;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+            border: 1px solid #e8eef3;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 34px;
+            font-weight: bold;
+            color: #1769aa;
+        }
+
+        .bed-section {
+            margin-top: 35px;
+        }
+
+        .bed-card {
+            border-left: 5px solid #1769aa;
+        }
+
+        .available {
+            border-left-color: #28a745;
+        }
+
+        .available p {
+            color: #28a745;
+        }
+
+        .occupied {
+            border-left-color: #dc3545;
+        }
+
+        .occupied p {
+            color: #dc3545;
+        }
+
+        .reserved {
+            border-left-color: #ffc107;
+        }
+
+        .reserved p {
+            color: #d39e00;
+        }
+
+        .menu {
+            margin-top: 45px;
+        }
+
+        .menu-title {
+            margin-bottom: 20px;
+        }
+
+        .menu-title h2 {
+            font-size: 26px;
+            color: #123b5d;
+            margin-bottom: 7px;
+        }
+
+        .menu-title p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .management-card {
+            background: white;
+            min-height: 190px;
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid #e5edf4;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .management-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+            border-color: #1769aa;
+        }
+
+        .management-icon {
+            width: 55px;
+            height: 55px;
+            background: #eaf4ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .management-card h3 {
+            font-size: 21px;
+            color: #123b5d;
+            margin-bottom: 8px;
+        }
+
+        .management-card p {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .management-card button {
+            width: 100%;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 9px;
+            background: #1769aa;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .management-card button:hover {
+            background: #0d4f82;
+        }
+
+        .refresh-info {
+            margin-top: 15px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 45px;
+            padding: 20px;
+            color: #8a94a6;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .menu-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                padding: 15px 18px;
+                flex-wrap: wrap;
+            }
+
+            .navbar h2 {
+                font-size: 17px;
+            }
+
+            .container {
+                padding: 25px 18px;
+            }
+
+            .welcome h1 {
+                font-size: 27px;
+            }
+
+            .cards,
+            .menu-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>🏥 Hospital Management System</h2>
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container">
+
+        <!-- WELCOME -->
+        <div class="welcome">
+            <h1>Dashboard</h1>
+            <p>Welcome to Hospital Management System</p>
+        </div>
+
+        <!-- GENERAL STATISTICS -->
+        <h2 class="section-title">Hospital Overview</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>👤 Total Patients</h3>
+                <p id="patients">0</p>
+            </div>
+
+            <div class="card">
+                <h3>👨‍⚕️ Total Doctors</h3>
+                <p id="doctors">0</p>
+            </div>
+
+            <div class="card">
+                <h3>🏥 Total Wards</h3>
+                <p id="wards">0</p>
+            </div>
+
+            <div class="card">
+                <h3>📋 Total Admissions</h3>
+                <p id="admissions">0</p>
+            </div>
+
+        </div>
+
+        <!-- BED TRACKING -->
+        <div class="bed-section">
+
+            <h2 class="section-title">🛏️ Real-Time Bed Tracking</h2>
+
+            <div class="cards">
+
+                <div class="card bed-card">
+                    <h3>Total Beds</h3>
+                    <p id="beds">0</p>
+                </div>
+
+                <div class="card bed-card available">
+                    <h3>Available Beds</h3>
+                    <p id="availableBeds">0</p>
+                </div>
+
+                <div class="card bed-card occupied">
+                    <h3>Occupied Beds</h3>
+                    <p id="occupiedBeds">0</p>
+                </div>
+
+                <div class="card bed-card reserved">
+                    <h3>Reserved Beds</h3>
+                    <p id="reservedBeds">0</p>
+                </div>
+
+            </div>
+
+            <p class="refresh-info" id="lastUpdated">
+                Loading dashboard data...
+            </p>
+
+        </div>
+
+        <!-- MANAGEMENT -->
+        <div class="menu">
+
+            <div class="menu-title">
+                <h2>Management</h2>
+                <p>Manage hospital operations and records</p>
+            </div>
+
+            <div class="menu-buttons">
+
+                <div class="management-card" onclick="openPatients()">
+                    <div>
+                        <div class="management-icon">👤</div>
+                        <h3>Patients</h3>
+                        <p>Add, view and manage patient records</p>
+                    </div>
+                    <button>Open Patients →</button>
+                </div>
+
+                <div class="management-card" onclick="openDoctors()">
+                    <div>
+                        <div class="management-icon">👨‍⚕️</div>
+                        <h3>Doctors</h3>
+                        <p>Manage doctors and their specializations</p>
+                    </div>
+                    <button>Open Doctors →</button>
+                </div>
+
+                <div class="management-card" onclick="openWards()">
+                    <div>
+                        <div class="management-icon">🏥</div>
+                        <h3>Wards</h3>
+                        <p>Manage hospital wards and bed capacity</p>
+                    </div>
+                    <button>Open Wards →</button>
+                </div>
+
+                <div class="management-card" onclick="openBeds()">
+                    <div>
+                        <div class="management-icon">🛏️</div>
+                        <h3>Bed Management</h3>
+                        <p>Track available, occupied and reserved beds</p>
+                    </div>
+                    <button>Open Beds →</button>
+                </div>
+
+                <div class="management-card" onclick="openAdmissions()">
+                    <div>
+                        <div class="management-icon">📋</div>
+                        <h3>Admissions</h3>
+                        <p>Manage patient admissions and discharge</p>
+                    </div>
+                    <button>Open Admissions →</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 Hospital Management System
+        </div>
+
+    </div>
+
+    <script>
+
+        // FETCH API DATA
+        async function fetchData(url) {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("Failed to load " + url);
+            }
+
+            return response.json();
+        }
+
+
+        // UPDATE DASHBOARD COUNTS
+        async function loadDashboard() {
+
+            try {
+
+                const [
+                    patients,
+                    doctors,
+                    wards,
+                    beds,
+                    admissions
+                ] = await Promise.all([
+                    fetchData("/api/patients"),
+                    fetchData("/api/doctors"),
+                    fetchData("/api/wards"),
+                    fetchData("/api/beds"),
+                    fetchData("/api/admissions")
+                ]);
+
+                // General counts
+                document.getElementById("patients").innerText =
+                    patients.length;
+
+                document.getElementById("doctors").innerText =
+                    doctors.length;
+
+                document.getElementById("wards").innerText =
+                    wards.length;
+
+                document.getElementById("admissions").innerText =
+                    admissions.length;
+
+                // Bed counts
+                const totalBeds = beds.length;
+
+                const availableBeds = beds.filter(bed =>
+                    String(bed.status).toUpperCase() === "AVAILABLE"
+                ).length;
+
+                const occupiedBeds = beds.filter(bed =>
+                    String(bed.status).toUpperCase() === "OCCUPIED"
+                ).length;
+
+                const reservedBeds = beds.filter(bed =>
+                    String(bed.status).toUpperCase() === "RESERVED"
+                ).length;
+
+                document.getElementById("beds").innerText =
+                    totalBeds;
+
+                document.getElementById("availableBeds").innerText =
+                    availableBeds;
+
+                document.getElementById("occupiedBeds").innerText =
+                    occupiedBeds;
+
+                document.getElementById("reservedBeds").innerText =
+                    reservedBeds;
+
+                document.getElementById("lastUpdated").innerText =
+                    "Last updated: " + new Date().toLocaleTimeString();
+
+            } catch (error) {
+
+                console.error("Dashboard Error:", error);
+
+                document.getElementById("lastUpdated").innerText =
+                    "Unable to load dashboard data. Please check server/API.";
+
+            }
+        }
+
+
+        // AUTO REFRESH EVERY 10 SECONDS
+        loadDashboard();
+        setInterval(loadDashboard, 10000);
+
+
+        // NAVIGATION
+        function logout() {
+            window.location.href = "login.html";
+        }
+
+        function openPatients() {
+            window.location.href = "patients.html";
+        }
+
+        function openDoctors() {
+            window.location.href = "doctors.html";
+        }
+
+        function openWards() {
+            window.location.href = "wards.html";
+        }
+
+        function openBeds() {
+            window.location.href = "beds.html";
+        }
+
+        function openAdmissions() {
+            window.location.href = "admissions.html";
+        }
+
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bed Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .navbar {
+            background: #1769aa;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .back {
+            background: white;
+            color: #1769aa;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #123b5d;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            margin-top: 20px;
+            background: #1769aa;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .add-btn:hover {
+            background: #0d4f82;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .search-box {
+            margin-top: 10px;
+            margin-bottom: 15px;
+            max-width: 400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            min-width: 750px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1769aa;
+            color: white;
+        }
+
+        tbody tr:hover {
+            background: #f1f7fc;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .occupied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .reserved {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .reserve-btn,
+        .edit-btn,
+        .delete-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            margin: 3px;
+        }
+
+        .reserve-btn {
+            background: #f0ad4e;
+        }
+
+        .reserve-btn:hover {
+            background: #ec971f;
+        }
+
+        .edit-btn {
+            background: #17a2b8;
+        }
+
+        .edit-btn:hover {
+            background: #117a8b;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: #b02a37;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .navbar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <div class="navbar">
+        <h2>🛏️ Bed Management</h2>
+
+        <button class="back" onclick="goDashboard()">
+            ← Dashboard
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- ADD NEW BED -->
+
+        <div class="box">
+
+            <h1>Add New Bed</h1>
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Bed Number</label>
+                    <input
+                        type="text"
+                        id="bedNumber"
+                        placeholder="Example: B-101"
+                        required>
+                </div>
+
+                <div>
+                    <label>Ward</label>
+                    <input
+                        type="text"
+                        id="ward"
+                        placeholder="Example: General Ward"
+                        required>
+                </div>
+
+                <div>
+                    <label>Status</label>
+                    <select id="status">
+                        <option value="AVAILABLE">AVAILABLE</option>
+                        <option value="OCCUPIED">OCCUPIED</option>
+                        <option value="RESERVED">RESERVED</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button class="add-btn" id="addButton" onclick="addBed()">
+                + Add Bed
+            </button>
+
+            <p id="message"></p>
+
+        </div>
+
+        <!-- BED LIST -->
+
+        <div class="box">
+
+            <h1>Bed List</h1>
+
+            <input
+                type="text"
+                id="searchInput"
+                class="search-box"
+                placeholder="🔍 Search Bed Number, Ward or Status..."
+                oninput="filterBeds()">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Bed ID</th>
+                        <th>Bed Number</th>
+                        <th>Ward</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="bedTable">
+                    <tr>
+                        <td colspan="5" class="no-data">
+                            Loading beds...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let allBeds = [];
+
+        // LOAD BEDS FROM DATABASE
+
+        async function loadBeds() {
+
+            const table = document.getElementById("bedTable");
+
+            try {
+
+                const response = await fetch("/api/beds");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load beds");
+                }
+
+                allBeds = await response.json();
+
+                filterBeds();
+
+            } catch (error) {
+
+                console.error("Bed Load Error:", error);
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="no-data">
+                            Failed to load beds. Please refresh.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+
+        // DISPLAY BED DETAILS
+
+        function displayBeds(beds) {
+
+            const table = document.getElementById("bedTable");
+
+            table.innerHTML = "";
+
+            if (beds.length === 0) {
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="no-data">
+                            No beds found.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            beds.forEach(bed => {
+
+                const status = (bed.status || "UNKNOWN").toUpperCase();
+
+                let statusClass = "";
+
+                if (status === "AVAILABLE") {
+                    statusClass = "available";
+                } else if (status === "OCCUPIED") {
+                    statusClass = "occupied";
+                } else if (status === "RESERVED") {
+                    statusClass = "reserved";
+                }
+
+                // Edit and Delete buttons
+                let action = `
+                    <button
+                        class="edit-btn"
+                        onclick="editBed(${bed.id})">
+                        Edit
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteBed(${bed.id})">
+                        Delete
+                    </button>
+                `;
+
+                // Reserve button only for AVAILABLE beds
+                if (status === "AVAILABLE") {
+
+                    action += `
+                        <button
+                            class="reserve-btn"
+                            onclick="reserveBed(${bed.id}, this)">
+                            Reserve
+                        </button>
+                    `;
+                }
+
+                const bedNumber = escapeHTML(bed.bedNumber ?? "-");
+                const ward = escapeHTML(bed.ward ?? "-");
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${bed.id ?? "-"}</td>
+
+                    <td>${bedNumber}</td>
+
+                    <td>${ward}</td>
+
+                    <td>
+                        <span class="status ${statusClass}">
+                            ${escapeHTML(status)}
+                        </span>
+                    </td>
+
+                    <td>${action}</td>
+                `;
+
+                table.appendChild(row);
+
+            });
+        }
+
+
+        // SEARCH / FILTER BEDS
+
+        function filterBeds() {
+
+            const searchValue = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+            const filteredBeds = allBeds.filter(bed => {
+
+                return (
+                    String(bed.id ?? "").toLowerCase().includes(searchValue) ||
+                    String(bed.bedNumber ?? "").toLowerCase().includes(searchValue) ||
+                    String(bed.ward ?? "").toLowerCase().includes(searchValue) ||
+                    String(bed.status ?? "").toLowerCase().includes(searchValue)
+                );
+
+            });
+
+            displayBeds(filteredBeds);
+        }
+
+
+        // ADD NEW BED
+
+        async function addBed() {
+
+            const button = document.getElementById("addButton");
+            const message = document.getElementById("message");
+
+            const bedNumber = document
+                .getElementById("bedNumber")
+                .value.trim();
+
+            const ward = document
+                .getElementById("ward")
+                .value.trim();
+
+            const status = document
+                .getElementById("status")
+                .value;
+
+            if (!bedNumber || !ward) {
+
+                message.innerText = "Please fill all fields.";
+                message.style.color = "red";
+
+                return;
+            }
+
+            const bed = {
+                bedNumber: bedNumber,
+                ward: ward,
+                status: status
+            };
+
+            button.disabled = true;
+            button.innerText = "Adding...";
+
+            try {
+
+                const response = await fetch("/api/beds", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(bed)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Failed to add bed");
+                }
+
+                message.innerText = "Bed added successfully!";
+                message.style.color = "green";
+
+                document.getElementById("bedNumber").value = "";
+                document.getElementById("ward").value = "";
+                document.getElementById("status").value = "AVAILABLE";
+
+                await loadBeds();
+
+            } catch (error) {
+
+                console.error("Add Bed Error:", error);
+
+                message.innerText = "Failed to add bed: " + error.message;
+                message.style.color = "red";
+
+            } finally {
+
+                button.disabled = false;
+                button.innerText = "+ Add Bed";
+            }
+        }
+
+
+        // EDIT BED
+
+        async function editBed(id) {
+
+            const bed = allBeds.find(b => b.id === id);
+
+            if (!bed) {
+                alert("Bed not found.");
+                return;
+            }
+
+            const newBedNumber = prompt(
+                "Enter Bed Number:",
+                bed.bedNumber
+            );
+
+            if (newBedNumber === null) return;
+
+            const newWard = prompt(
+                "Enter Ward Name:",
+                bed.ward
+            );
+
+            if (newWard === null) return;
+
+            const newStatus = prompt(
+                "Enter Status (AVAILABLE, OCCUPIED, RESERVED):",
+                bed.status
+            );
+
+            if (newStatus === null) return;
+
+            const validStatuses = [
+                "AVAILABLE",
+                "OCCUPIED",
+                "RESERVED"
+            ];
+
+            const finalStatus = newStatus.trim().toUpperCase();
+
+            if (
+                !newBedNumber.trim() ||
+                !newWard.trim() ||
+                !validStatuses.includes(finalStatus)
+            ) {
+                alert("Please enter valid bed details.");
+                return;
+            }
+
+            const updatedBed = {
+                bedNumber: newBedNumber.trim(),
+                ward: newWard.trim(),
+                status: finalStatus
+            };
+
+            try {
+
+                const response = await fetch(`/api/beds/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedBed)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to update bed");
+                }
+
+                alert("Bed updated successfully!");
+
+                await loadBeds();
+
+            } catch (error) {
+
+                console.error("Edit Bed Error:", error);
+
+                alert("Failed to update bed. Please try again.");
+            }
+        }
+
+
+        // DELETE BED
+
+        async function deleteBed(id) {
+
+            const confirmDelete = confirm(
+                "Are you sure you want to delete Bed ID " + id + "?"
+            );
+
+            if (!confirmDelete) return;
+
+            try {
+
+                const response = await fetch(`/api/beds/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to delete bed");
+                }
+
+                alert("Bed deleted successfully!");
+
+                await loadBeds();
+
+            } catch (error) {
+
+                console.error("Delete Bed Error:", error);
+
+                alert(
+                    "Unable to delete bed. It may have a linked admission."
+                );
+            }
+        }
+
+
+        // RESERVE BED
+
+        async function reserveBed(id, button) {
+
+            if (!confirm("Are you sure you want to reserve this bed?")) {
+                return;
+            }
+
+            button.disabled = true;
+            button.innerText = "Reserving...";
+
+            try {
+
+                const response = await fetch("/api/beds/reserve/" + id, {
+                    method: "PUT"
+                });
+
+                if (!response.ok) {
+                    throw new Error("Unable to reserve bed");
+                }
+
+                alert("Bed reserved successfully!");
+
+                await loadBeds();
+
+            } catch (error) {
+
+                console.error("Reserve Bed Error:", error);
+
+                alert("Failed to reserve bed. Please try again.");
+
+                await loadBeds();
+            }
+        }
+
+
+        // ESCAPE HTML
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        // BACK TO DASHBOARD
+
+        function goDashboard() {
+
+            window.location.href = "dashboard.html";
+        }
+
+
+        // INITIAL LOAD
+
+        loadBeds();
+
+        // AUTO REFRESH BED STATUS EVERY 10 SECONDS
+
+        setInterval(loadBeds, 10000);
+
+    </script>
+
+</body>
+</html>
